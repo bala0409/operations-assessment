@@ -1,0 +1,44 @@
+From 49f12cad60241963ac36c54f47b839d509c17b49 Mon Sep 17 00:00:00 2001
+From: root <root@DESKTOP-8A1PVKI.localdomain>
+Date: Sun, 13 Jun 2021 09:43:54 +0530
+Subject: [PATCH] Adding with patch
+
+---
+ dynamodb.tf | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/dynamodb.tf b/dynamodb.tf
+index 346f0d3..ac9f8d0 100644
+--- a/dynamodb.tf
++++ b/dynamodb.tf
+@@ -1,10 +1,23 @@
+ resource "aws_dynamodb_table" "machine_properties" {
+   hash_key = "MachineID"
+   name = "${local.system_name}-MachineState"
++  billing_mode = "PAY_PER_REQUEST"
+   attribute {
+-    name = "MachineID"
+-    type = "S"
+-  }
++     name = "MachineID"
++     type = "S"
++   }
++}
+ 
+-  billing_mode = "PAY_PER_REQUEST"
++
++resource "aws_dynamodb_table_item" "machine_properties" {
++  table_name = aws_dynamodb_table.machine_properties.name
++  hash_key   = aws_dynamodb_table.machine_properties.hash_key
++
++  item = <<ITEM
++{
++  "MachineID": {"S": "i-0eeabf6aab5e3e4ed"},
++  "AvailabilityZone": {"S": "us-east-1"},
++  "InstanceType": {"S": "t3.micro" }
++}
++ITEM
+ }
+-- 
+2.25.1
+
